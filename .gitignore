@@ -1,0 +1,4 @@
+.idea/*
+*.iml
+tf-src/.terraform
+tf-src/.terraform.lock.hcl
