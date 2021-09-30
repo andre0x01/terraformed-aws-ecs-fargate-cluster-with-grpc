@@ -1,4 +1,7 @@
 # Based on https://dev.to/thnery/create-an-aws-ecs-cluster-using-terraform-g80
+variable "ecr_image_reference" {
+  type = string
+}
 
 variable "aws_cloudwatch_retention_in_days" {
   type        = number
@@ -52,7 +55,7 @@ resource "aws_ecs_task_definition" "minecraft-event-ingress-ecs-task" {
   [
     {
       "name": "${var.app_name}-${var.app_environment}-container",
-      "image": "golang-minecraft-event-ingress-4c903e01c7139b885b46ed3bdb8bfa21a79869d5-2021-09-24T15-32-14",
+      "image": "${var.ecr_image_reference}",
       "entryPoint": [],
       "essential": true,
       "logConfiguration": {
@@ -135,11 +138,11 @@ resource "aws_ecs_service" "aws-ecs-service" {
     ]
   }
 
-  load_balancer {
-    #target_group_arn = aws_lb_target_group.target_group.arn
-    container_name   = "${var.app_name}-${var.app_environment}-container"
-    container_port   = 8000
-  }
+  #load_balancer {
+  #  target_group_arn = aws_lb_target_group.target_group.arn
+  #  container_name   = "${var.app_name}-${var.app_environment}-container"
+  #  container_port   = 8000
+  #}
 
   #depends_on = [aws_lb_listener.listener]
 }
