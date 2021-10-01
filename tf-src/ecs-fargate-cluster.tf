@@ -4,14 +4,14 @@ variable "ecr_image_reference" {
 }
 
 variable "aws_cloudwatch_retention_in_days" {
-  type        = number
+  type = number
 }
 
 # IAM
 resource "aws_iam_role" "ecsTaskExecutionRole" {
   name               = "${var.app_name}-execution-task-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
-  tags = {
+  tags               = {
     Name        = "${var.app_name}-iam-role"
     Environment = var.app_environment
   }
@@ -48,7 +48,7 @@ resource "aws_cloudwatch_log_group" "log-group" {
     Environment = var.app_environment
   }
 }
-resource "aws_ecs_task_definition" "minecraft-event-ingress-ecs-task" {
+resource "aws_ecs_task_definition" "event-ingress-ecs-task" {
   family = "${var.app_name}-task"
 
   container_definitions = <<DEFINITION
@@ -93,7 +93,7 @@ resource "aws_ecs_task_definition" "minecraft-event-ingress-ecs-task" {
 }
 
 data "aws_ecs_task_definition" "main" {
-  task_definition = aws_ecs_task_definition.minecraft-event-ingress-ecs-task.family
+  task_definition = aws_ecs_task_definition.event-ingress-ecs-task.family
 }
 
 resource "aws_security_group" "service_security_group" {
@@ -103,8 +103,7 @@ resource "aws_security_group" "service_security_group" {
     from_port       = 0
     to_port         = 0
     protocol        = "-1"
-    #security_groups = [aws_security_group.load_balancer_security_group.id]
-    security_groups = []
+    security_groups = [aws_security_group.load_balancer_security_group.id]
   }
 
   egress {
@@ -123,7 +122,7 @@ resource "aws_security_group" "service_security_group" {
 resource "aws_ecs_service" "aws-ecs-service" {
   name                 = "${var.app_name}-${var.app_environment}-ecs-service"
   cluster              = aws_ecs_cluster.aws-ecs-cluster.id
-  task_definition      = "${aws_ecs_task_definition.minecraft-event-ingress-ecs-task.family}:${max(aws_ecs_task_definition.minecraft-event-ingress-ecs-task.revision, data.aws_ecs_task_definition.main.revision)}"
+  task_definition      = "${aws_ecs_task_definition.event-ingress-ecs-task.family}:${max(aws_ecs_task_definition.event-ingress-ecs-task.revision, data.aws_ecs_task_definition.main.revision)}"
   launch_type          = "FARGATE"
   scheduling_strategy  = "REPLICA"
   desired_count        = 1
@@ -132,19 +131,19 @@ resource "aws_ecs_service" "aws-ecs-service" {
   network_configuration {
     subnets          = aws_subnet.private.*.id
     assign_public_ip = false
-    security_groups = [
+    security_groups  = [
       aws_security_group.service_security_group.id,
-      #aws_security_group.load_balancer_security_group.id
+      aws_security_group.load_balancer_security_group.id
     ]
   }
 
-  #load_balancer {
-  #  target_group_arn = aws_lb_target_group.target_group.arn
-  #  container_name   = "${var.app_name}-${var.app_environment}-container"
-  #  container_port   = 8000
-  #}
+  load_balancer {
+    target_group_arn = aws_lb_target_group.target_group.arn
+    container_name   = "${var.app_name}-${var.app_environment}-container"
+    container_port   = 8000
+  }
 
-  #depends_on = [aws_lb_listener.listener]
+  depends_on = [aws_lb_listener.listener]
 }
 
 resource "aws_appautoscaling_target" "ecs_target" {

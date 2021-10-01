@@ -1,5 +1,19 @@
 # Based on https://dev.to/thnery/create-an-aws-ecs-cluster-using-terraform-g80
 
+variable "lb_listener_certificate_arn" {
+  type = string
+  description = "SSL certificate ARN for alb listener"
+}
+
+variable "route53_hosted_zone_id" {
+  type = string
+  description = "Zone Id where to create dns entry for load balancer"
+}
+
+variable "route53-ingress-dns-name" {
+  description = "dns name that forwards traffic to the application load balancer"
+}
+
 resource "aws_alb" "application_load_balancer" {
   name               = "${var.app_name}-${var.app_environment}-alb"
   internal           = false
@@ -61,11 +75,24 @@ resource "aws_lb_target_group" "target_group" {
 }
 resource "aws_lb_listener" "listener" {
   load_balancer_arn = aws_alb.application_load_balancer.id
-  port              = "80"
+  port              = "443"
   protocol          = "HTTPS"
+  certificate_arn = var.lb_listener_certificate_arn
 
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.target_group.id
+  }
+}
+
+resource "aws_route53_record" "alb_dns_alias" {
+  zone_id = var.route53_hosted_zone_id
+  name    = var.route53-ingress-dns-name
+  type    = "A"
+
+  alias {
+    name                   = aws_alb.application_load_balancer.dns_name
+    zone_id                = aws_alb.application_load_balancer.zone_id
+    evaluate_target_health = true
   }
 }
