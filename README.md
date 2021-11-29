@@ -6,9 +6,9 @@ The ALB uses a given SSL cerificate and a DNS name is generated in a given hoste
 
 This is just a pet project, don't use it in production setup.
 
-#Variables to set
+## Variables to set
 
-##main.tf
+### main.tf
 ````
 variable "aws_region" {
   type        = string
@@ -24,7 +24,7 @@ variable "app_name" {
 }
 ````
 
-##load-balancer.tf
+### load-balancer.tf
 ```
 variable "lb_listener_certificate_arn" {
   type = string
@@ -39,7 +39,7 @@ variable "route53-ingress-dns-name" {
 }
 ```
 
-## network.tf
+### network.tf
 ```
 variable "public_subnets" {
   description = "List of public subnets"
@@ -52,7 +52,7 @@ variable "availability_zones" {
 }
 ```
 
-## ecs-fargate-cluster.tf
+### ecs-fargate-cluster.tf
 ```
 variable "ecr_image_reference" {
   type = string
@@ -63,5 +63,5 @@ variable "aws_cloudwatch_retention_in_days" {
 }
 ```
 
-# Based on
+## Based on
 https://dev.to/thnery/create-an-aws-ecs-cluster-using-terraform-g80
