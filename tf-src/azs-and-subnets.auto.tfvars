@@ -1,3 +1,4 @@
+# Terraform cloud currently does not support list variables
 # see https://stackoverflow.com/questions/59756386/terraform-list-of-string-required-cidr-blocks-in-aws
 
 availability_zones = ["eu-central-1a", "eu-central-1b"]

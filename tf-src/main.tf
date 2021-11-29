@@ -1,7 +1,7 @@
 # Based on https://dev.to/thnery/create-an-aws-ecs-cluster-using-terraform-g80
 
 variable "aws_region" {
-  type = string
+  type        = string
 }
 variable "aws_access_key" {
   type = string
@@ -10,7 +10,7 @@ variable "aws_secret_key" {
   type = string
 }
 variable "app_name" {
-  type = string
+  type        = string
 }
 variable "app_environment" {
   type        = string
@@ -20,7 +20,7 @@ variable "app_environment" {
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
     }
   }
   # terraform cloud
