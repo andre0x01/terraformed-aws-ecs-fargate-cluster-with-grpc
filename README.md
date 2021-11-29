@@ -1,6 +1,6 @@
 # Terraform AWS Fargate ECS
 A small pet project to play around with [Terraform](https://www.terraform.io), [Hashicorp Cloud](https://cloud.hashicorp.com), [AWS ECS Fargate](https://aws.amazon.com/de/fargate/) and [gRPC](https://grpc.io).
-The scripts spins up an ECS cluster in a private AWS subnet.
+The scripts spin up an ECS cluster in a private AWS subnet.
 An application load balancer for a GRPC API is placed in a public subnet and is routing traffic to the ECS cluster.
 The ALB uses a given SSL cerificate and a DNS name is generated in a given hosted zone in [AWS Route 53](https://aws.amazon.com/route53/).
 
