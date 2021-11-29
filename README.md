@@ -4,7 +4,7 @@ The scripts spin up an ECS cluster in a private AWS subnet.
 An application load balancer for a gRPC API is placed in a public subnet and is routing traffic to the ECS cluster.
 The ALB uses a given SSL cerificate and a DNS name is generated in a given hosted zone in [AWS Route 53](https://aws.amazon.com/route53/).
 
-This is just a pet project, don't use it in production setup.
+This is just a show case project, I don't recommend using it in a production setup.
 
 ## Variables to set
 
